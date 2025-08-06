@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#FFA000">
+  <title>Creative Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+    }
+
+    html {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      height: 100%;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #4E342E;
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Main App Container */
+    .app-container {
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: rgba(255, 250, 240, 0.95);
+    }
+
+    /* Header Bar */
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 100%);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 100;
+      min-height: 56px;
+    }
+
+    .menu-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: none;
+      font-size: 24px;
+    }
+
+    .menu-btn:active {
+      transform: scale(0.95);
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .inspire-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: none;
+      font-size: 24px;
+    }
+
+    .inspire-btn:active {
+      transform: scale(0.95);
+      background: #FFEB3B;
+    }
+
+    /* Sidebar Drawer */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      z-index: 200;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      max-width: 85%;
+      height: 100%;
+      background: white;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 100%);
+      color: white;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-button {
+      display: block;
+      width: 100%;
+      padding: 16px 20px;
+      background: white;
+      border: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #6D4C41;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .tab-button:active {
+      transform: scale(0.98);
+      background: #FFF3E0;
+    }
+
+    .tab-button.active {
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 100%);
+      color: white;
+      box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
+    }
+
+    /* Inspiration Area */
+    .inspiration-area {
+      padding: 12px 16px;
+      margin: 0 16px 16px 16px;
+      background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      color: #5D4037;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 16px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 12px 8px;
+      background: white;
+      border: 2px solid #FFA000;
+      border-radius: 12px;
+      color: #5D4037;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .action-btn:active {
+      transform: scale(0.95);
+      background: #FFF3E0;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 100%);
+      color: white;
+      border: none;
+    }
+
+    /* Text Input Area */
+    .text-container {
+      flex: 1;
+      min-height: 120px;
+      max-height: 200px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    #entryInput {
+      width: 100%;
+      height: 100%;
+      font-size: 16px;
+      font-family: 'Nunito', sans-serif;
+      padding: 12px;
+      background: white;
+      color: #4E342E;
+      border: 2px solid #FFE0B2;
+      border-radius: 12px;
+      resize: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      line-height: 1.5;
+      -webkit-appearance: none;
+    }
+
+    #entryInput:focus {
+      outline: none;
+      border-color: #FFA000;
+      box-shadow: 0 0 0 3px rgba(255, 160, 0, 0.1);
+    }
+
+    /* Canvas Container */
+    .canvas-container {
+      flex: 1;
+      min-height: 150px;
+      position: relative;
+      margin-bottom: 16px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    #drawCanvas {
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: crosshair;
+      display: block;
+    }
+
+    /* Color Picker */
+    .color-picker-container {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .color-option {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .color-option:active {
+      transform: scale(0.9);
+    }
+
+    .color-option.active {
+      border-color: #FFA000;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #FFA000;
+    }
+
+    /* History Section */
+    .history-container {
+      display: flex;
+      gap: 8px;
+      padding: 12px 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 60px;
+    }
+
+    .history-entry {
+      padding: 10px 16px;
+      background: white;
+      border-radius: 20px;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 600;
+      color: #5D4037;
+      border: 2px solid #FFE0B2;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .history-entry:active {
+      transform: scale(0.95);
+      background: #FFF3E0;
+    }
+
+    /* Modal for Delete Confirmation */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #5D4037;
+      margin-bottom: 12px;
+    }
+
+    .modal-text {
+      font-size: 16px;
+      color: #8D6E63;
+      margin-bottom: 20px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-btn.cancel {
+      background: #F5F5F5;
+      color: #8D6E63;
+    }
+
+    .modal-btn.confirm {
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 100%);
+      color: white;
+    }
+
+    .modal-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Responsive adjustments */
+    @media (max-height: 600px) {
+      .text-container {
+        max-height: 100px;
+      }
+      .canvas-container {
+        min-height: 100px;
+      }
+    }
+
+    /* Loading spinner */
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    /* Accessibility improvements */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header-bar">
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+      <div class="header-title" id="headerTitle">Self-liking</div>
+      <button class="inspire-btn" id="inspireBtn" aria-label="Get Inspiration">💡</button>
+    </div>
+
+    <!-- Inspiration Quote -->
+    <div class="inspiration-area" id="inspirationQuote">
+      Tap the lightbulb for inspiration! ✨
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="action-btn primary" id="saveBtn">
+          <span>💾</span>
+          <span>Save</span>
+        </button>
+        <button class="action-btn" id="clearTextBtn">
+          <span>📝</span>
+          <span>Clear Text</span>
+        </button>
+        <button class="action-btn" id="clearCanvasBtn">
+          <span>🎨</span>
+          <span>Clear Art</span>
+        </button>
+      </div>
+
+      <!-- Text Input -->
+      <div class="text-container">
+        <textarea id="entryInput" placeholder="What's on your mind? Let your creativity flow..." aria-label="Journal Entry"></textarea>
+      </div>
+
+      <!-- Color Picker -->
+      <div class="color-picker-container" id="colorPicker">
+        <div class="color-option active" data-color="#4E342E" style="background: #4E342E"></div>
+        <div class="color-option" data-color="#000000" style="background: #000000"></div>
+        <div class="color-option" data-color="#F44336" style="background: #F44336"></div>
+        <div class="color-option" data-color="#4CAF50" style="background: #4CAF50"></div>
+        <div class="color-option" data-color="#2196F3" style="background: #2196F3"></div>
+        <div class="color-option" data-color="#FF9800" style="background: #FF9800"></div>
+        <div class="color-option" data-color="#9C27B0" style="background: #9C27B0"></div>
+        <div class="color-option" data-color="#E91E63" style="background: #E91E63"></div>
+        <div class="color-option" data-color="#00BCD4" style="background: #00BCD4"></div>
+        <div class="color-option" data-color="#FFC107" style="background: #FFC107"></div>
+      </div>
+
+      <!-- Drawing Canvas -->
+      <div class="canvas-container">
+        <canvas id="drawCanvas"></canvas>
+      </div>
+
+      <!-- History -->
+      <div class="history-container" id="historyContainer"></div>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">Categories</div>
+    <div class="sidebar-content">
+      <button class="tab-button active" data-tab="Self-liking">Self-liking</button>
+      <button class="tab-button" data-tab="Expectations">Expectations</button>
+      <button class="tab-button" data-tab="Ideas">Ideas</button>
+      <button class="tab-button" data-tab="Visions">Visions</button>
+      <button class="tab-button" data-tab="Objectives">Objectives</button>
+      <button class="tab-button" data-tab="Goals">Goals</button>
+      <button class="tab-button" data-tab="Philosophies">Philosophies</button>
+      <button class="tab-button" data-tab="Experiments">Experiments</button>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <div class="modal-title">Delete Entry?</div>
+      <div class="modal-text">This action cannot be undone.</div>
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" id="cancelDelete">Cancel</button>
+        <button class="modal-btn confirm" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fix viewport height on mobile
+    function setViewportHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+
+    // App State
+    const app = {
+      currentTab: 'Self-liking',
+      entries: {},
+      drawing: false,
+      currentColor: '#4E342E',
+      deleteIndex: null,
+      canvas: null,
+      ctx: null,
+      lastX: 0,
+      lastY: 0
+    };
+
+    // Storage
+    const STORAGE_KEY = 'creativeJournal_Android_V2';
+    
+    // Elements
+    const elements = {
+      menuBtn: document.getElementById('menuBtn'),
+      inspireBtn: document.getElementById('inspireBtn'),
+      saveBtn: document.getElementById('saveBtn'),
+      clearTextBtn: document.getElementById('clearTextBtn'),
+      clearCanvasBtn: document.getElementById('clearCanvasBtn'),
+      headerTitle: document.getElementById('headerTitle'),
+      sidebar: document.getElementById('sidebar'),
+      sidebarOverlay: document.getElementById('sidebarOverlay'),
+      entryInput: document.getElementById('entryInput'),
+      inspirationQuote: document.getElementById('inspirationQuote'),
+      historyContainer: document.getElementById('historyContainer'),
+      colorPicker: document.getElementById('colorPicker'),
+      deleteModal: document.getElementById('deleteModal'),
+      cancelDelete: document.getElementById('cancelDelete'),
+      confirmDelete: document.getElementById('confirmDelete')
+    };
+
+    // Inspiration Quotes
+    const quotes = [
+      "Creativity is intelligence having fun. – Einstein",
+      "The more you use creativity, the more you have. – Angelou",
+      "Everything you can imagine is real. – Picasso",
+      "Be yourself; everyone else is taken. – Wilde",
+      "Dream big and dare to fail. – Vaughan",
+      "Your only limit is your mind.",
+      "Create your own sunshine. ☀️",
+      "Every moment is a fresh beginning.",
+      "You are capable of amazing things.",
+      "Today is your day to shine!"
+    ];
+
+    // Initialize Canvas
+    function initCanvas() {
+      app.canvas = document.getElementById('drawCanvas');
+      app.ctx = app.canvas.getContext('2d');
+      
+      // Set canvas size
+      function resizeCanvas() {
+        const container = app.canvas.parentElement;
+        const rect = container.getBoundingClientRect();
+        app.canvas.width = rect.width;
+        app.canvas.height = rect.height;
+        app.ctx.lineCap = 'round';
+        app.ctx.lineJoin = 'round';
+      }
+      
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      // Touch events
+      app.canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+      app.canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      app.canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+      
+      // Mouse events (for testing on desktop)
+      app.canvas.addEventListener('mousedown', handleMouseDown);
+      app.canvas.addEventListener('mousemove', handleMouseMove);
+      app.canvas.addEventListener('mouseup', handleMouseUp);
+      app.canvas.addEventListener('mouseleave', handleMouseUp);
+    }
+
+    // Drawing functions
+    function startDrawing(x, y) {
+      app.drawing = true;
+      app.lastX = x;
+      app.lastY = y;
+      app.ctx.beginPath();
+      app.ctx.moveTo(x, y);
+    }
+
+    function draw(x, y) {
+      if (!app.drawing) return;
+      
+      app.ctx.strokeStyle = app.currentColor;
+      app.ctx.lineWidth = 3;
+      app.ctx.beginPath();
+      app.ctx.moveTo(app.lastX, app.lastY);
+      app.ctx.lineTo(x, y);
+      app.ctx.stroke();
+      
+      app.lastX = x;
+      app.lastY = y;
+    }
+
+    function stopDrawing() {
+      app.drawing = false;
+    }
+
+    // Touch handlers
+    function handleTouchStart(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = app.canvas.getBoundingClientRect();
+      startDrawing(touch.clientX - rect.left, touch.clientY - rect.top);
+    }
+
+    function handleTouchMove(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = app.canvas.getBoundingClientRect();
+      draw(touch.clientX - rect.left, touch.clientY - rect.top);
+    }
+
+    function handleTouchEnd(e) {
+      e.preventDefault();
+      stopDrawing();
+    }
+
+    // Mouse handlers
+    function handleMouseDown(e) {
+      const rect = app.canvas.getBoundingClientRect();
+      startDrawing(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function handleMouseMove(e) {
+      const rect = app.canvas.getBoundingClientRect();
+      draw(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function handleMouseUp() {
+      stopDrawing();
+    }
+
+    // Sidebar functions
+    function openSidebar() {
+      elements.sidebar.classList.add('active');
+      elements.sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      elements.sidebar.classList.remove('active');
+      elements.sidebarOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Tab switching
+    function switchTab(tabName) {
+      app.currentTab = tabName;
+      elements.headerTitle.textContent = tabName;
+      
+      // Update active tab button
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      });
+      
+      // Clear current content
+      elements.entryInput.value = '';
+      clearCanvas();
+      
+      // Load entries for this tab
+      loadEntries();
+      
+      // Close sidebar
+      closeSidebar();
+    }
+
+    // Storage functions
+    function loadFromStorage() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        app.entries = stored ? JSON.parse(stored) : {};
+      } catch (e) {
+        console.error('Error loading data:', e);
+        app.entries = {};
+      }
+    }
+
+    function saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(app.entries));
+      } catch (e) {
+        console.error('Error saving data:', e);
+        alert('Unable to save. Storage may be full.');
+      }
+    }
+
+    // Entry management
+    function saveEntry() {
+      const text = elements.entryInput.value.trim();
+      const canvasData = app.canvas.toDataURL('image/png', 0.7); // Compress for storage
+      
+      if (!text && isCanvasEmpty()) {
+        showToast('Please write or draw something first!');
+        return;
+      }
+      
+      if (!app.entries[app.currentTab]) {
+        app.entries[app.currentTab] = [];
+      }
+      
+      const entry = {
+        text: text,
+        drawing: isCanvasEmpty() ? null : canvasData,
+        date: new Date().toLocaleString('en-US', { 
+          month: 'short', 
+          day: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        })
+      };
+      
+      app.entries[app.currentTab].push(entry);
+      saveToStorage();
+      
+      // Clear inputs
+      elements.entryInput.value = '';
+      clearCanvas();
+      
+      // Reload history
+      loadEntries();
+      
+      showToast('Entry saved! ✨');
+    }
+
+    function loadEntries() {
+      elements.historyContainer.innerHTML = '';
+      
+      if (!app.entries[app.currentTab] || app.entries[app.currentTab].length === 0) {
+        elements.historyContainer.innerHTML = '<div style="color: #BDBDBD; padding: 20px;">No entries yet</div>';
+        return;
+      }
+      
+      // Show newest first
+      app.entries[app.currentTab].slice().reverse().forEach((entry, index) => {
+        const actualIndex = app.entries[app.currentTab].length - 1 - index;
+        const entryEl = document.createElement('div');
+        entryEl.className = 'history-entry';
+        entryEl.textContent = entry.date;
+        
+        // Tap to load
+        entryEl.addEventListener('click', () => loadEntry(entry));
+        
+        // Long press to delete (using touch events)
+        let pressTimer;
+        entryEl.addEventListener('touchstart', () => {
+          pressTimer = setTimeout(() => {
+            navigator.vibrate && navigator.vibrate(50); // Haptic feedback
+            showDeleteModal(actualIndex);
+          }, 500);
+        });
+        
+        entryEl.addEventListener('touchend', () => clearTimeout(pressTimer));
+        entryEl.addEventListener('touchmove', () => clearTimeout(pressTimer));
+        
+        // Context menu for desktop
+        entryEl.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          showDeleteModal(actualIndex);
+        });
+        
+        elements.historyContainer.appendChild(entryEl);
+      });
+    }
+
+    function loadEntry(entry) {
+      elements.entryInput.value = entry.text || '';
+      
+      if (entry.drawing) {
+        const img = new Image();
+        img.onload = () => {
+          clearCanvas();
+          app.ctx.drawImage(img, 0, 0);
+        };
+        img.src = entry.drawing;
+      } else {
+        clearCanvas();
+      }
+      
+      showToast('Entry loaded');
+    }
+
+    function showDeleteModal(index) {
+      app.deleteIndex = index;
+      elements.deleteModal.classList.add('active');
+    }
+
+    function deleteEntry() {
+      if (app.deleteIndex !== null) {
+        app.entries[app.currentTab].splice(app.deleteIndex, 1);
+        saveToStorage();
+        loadEntries();
+        elements.entryInput.value = '';
+        clearCanvas();
+        showToast('Entry deleted');
+      }
+      elements.deleteModal.classList.remove('active');
+      app.deleteIndex = null;
+    }
+
+    // Canvas utilities
+    function clearCanvas() {
+      app.ctx.clearRect(0, 0, app.canvas.width, app.canvas.height);
+    }
+
+    function isCanvasEmpty() {
+      const pixelData = app.ctx.getImageData(0, 0, app.canvas.width, app.canvas.height).data;
+      return !pixelData.some(channel => channel !== 0);
+    }
+
+    // Color picker
+    function setupColorPicker() {
+      elements.colorPicker.addEventListener('click', (e) => {
+        const colorOption = e.target.closest('.color-option');
+        if (!colorOption) return;
+        
+        // Update active state
+        document.querySelectorAll('.color-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        colorOption.classList.add('active');
+        
+        // Set color
+        app.currentColor = colorOption.dataset.color;
+      });
+    }
+
+    // Inspiration
+    function showInspiration() {
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      elements.inspirationQuote.textContent = quote;
+      elements.inspirationQuote.style.animation = 'none';
+      setTimeout(() => {
+        elements.inspirationQuote.style.animation = 'pulse 0.5s';
+      }, 10);
+    }
+
+    // Toast notification
+    function showToast(message) {
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 24px;
+        font-size: 14px;
+        z-index: 1000;
+        animation: slideUp 0.3s;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideDown 0.3s';
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }
+
+    // Event Listeners
+    elements.menuBtn.addEventListener('click', openSidebar);
+    elements.sidebarOverlay.addEventListener('click', closeSidebar);
+    elements.inspireBtn.addEventListener('click', showInspiration);
+    elements.saveBtn.addEventListener('click', saveEntry);
+    elements.clearTextBtn.addEventListener('click', () => {
+      elements.entryInput.value = '';
+      showToast('Text cleared');
+    });
+    elements.clearCanvasBtn.addEventListener('click', () => {
+      clearCanvas();
+      showToast('Canvas cleared');
+    });
+    elements.cancelDelete.addEventListener('click', () => {
+      elements.deleteModal.classList.remove('active');
+      app.deleteIndex = null;
+    });
+    elements.confirmDelete.addEventListener('click', deleteEntry);
+
+    // Tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Prevent pull-to-refresh
+    document.body.addEventListener('touchmove', (e) => {
+      if (e.target === document.body) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Add animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+      @keyframes slideUp {
+        from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+      }
+      @keyframes slideDown {
+        from { transform: translateX(-50%) translateY(0); opacity: 1; }
+        to { transform: translateX(-50%) translateY(100%); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize app
+    function init() {
+      loadFromStorage();
+      initCanvas();
+      setupColorPicker();
+      loadEntries();
+      
+      // Prevent double-tap zoom
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+      
+      // Handle orientation changes
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          setViewportHeight();
+          window.scrollTo(0, 0);
+        }, 100);
+      });
+    }
+
+    // Start app when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
